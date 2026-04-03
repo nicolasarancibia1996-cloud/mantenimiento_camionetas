@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mantención Camionetas · Abril 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --negro: #0f0f0f;
+    --gris-oscuro: #1c1c1c;
+    --gris-medio: #2e2e2e;
+    --gris-borde: #3a3a3a;
+    --naranja: #f97316;
+    --naranja-dark: #c2580e;
+    --verde: #22c55e;
+    --verde-bg: #052e16;
+    --amarillo: #facc15;
+    --amarillo-bg: #1c1a02;
+    --rojo: #ef4444;
+    --rojo-bg: #2d0a0a;
+    --texto: #f0ede8;
+    --texto-sec: #9a9690;
+    --texto-ter: #5a5855;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--negro);
+    color: var(--texto);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Fondo con textura sutil */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255,255,255,0.012) 2px,
+      rgba(255,255,255,0.012) 3px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 0 16px 60px;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 36px 0 28px;
+    border-bottom: 1px solid var(--gris-borde);
+    margin-bottom: 28px;
+  }
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--naranja);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-icon svg { width: 20px; height: 20px; fill: #fff; }
+
+  .logo-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--texto-sec);
+  }
+
+  .header h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 38px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.05;
+    color: var(--texto);
+    margin-bottom: 8px;
+  }
+
+  .header h1 span { color: var(--naranja); }
+
+  .header p {
+    font-size: 14px;
+    color: var(--texto-sec);
+    line-height: 1.5;
+  }
+
+  /* SEARCH */
+  .search-wrap {
+    margin-bottom: 20px;
+  }
+
+  .search-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--texto-ter);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .search-box {
+    display: flex;
+    gap: 0;
+    background: var(--gris-oscuro);
+    border: 1px solid var(--gris-borde);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+
+  .search-box:focus-within {
+    border-color: var(--naranja);
+  }
+
+  #patInput {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--texto);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    padding: 14px 16px;
+    text-transform: uppercase;
+    caret-color: var(--naranja);
+  }
+
+  #patInput::placeholder {
+    color: var(--texto-ter);
+    font-size: 18px;
+    letter-spacing: 1px;
+    font-weight: 400;
+  }
+
+  #btnBuscar {
+    background: var(--naranja);
+    border: none;
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 0 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+
+  #btnBuscar:hover { background: var(--naranja-dark); }
+  #btnBuscar:active { transform: scale(0.97); }
+
+  /* LEYENDA */
+  .legend {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--texto-sec);
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-ok { background: var(--verde); }
+  .dot-hoy { background: var(--amarillo); }
+  .dot-vencido { background: var(--rojo); }
+
+  /* RESULT */
+  #result { animation: fadeIn 0.2s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-card {
+    background: var(--gris-oscuro);
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .card-top {
+    background: var(--gris-medio);
+    border-bottom: 1px solid var(--gris-borde);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .plate {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--texto);
+    background: var(--negro);
+    border: 2px solid var(--gris-borde);
+    border-radius: 6px;
+    padding: 6px 14px;
+  }
+
+  .global-status {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 20px;
+  }
+
+  .gs-ok { background: var(--verde-bg); color: var(--verde); border: 1px solid rgba(34,197,94,0.3); }
+  .gs-alerta { background: var(--amarillo-bg); color: var(--amarillo); border: 1px solid rgba(250,204,21,0.3); }
+  .gs-critico { background: var(--rojo-bg); color: var(--rojo); border: 1px solid rgba(239,68,68,0.3); }
+
+  .card-body {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .info-block {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--gris-borde);
+    border-radius: 8px;
+    padding: 14px;
+  }
+
+  .info-block .lbl {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--texto-ter);
+    margin-bottom: 6px;
+  }
+
+  .info-block .fecha-dia {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--texto-sec);
+    margin-bottom: 2px;
+  }
+
+  .info-block .fecha-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--texto);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+
+  .pill-ok { background: var(--verde-bg); color: var(--verde); }
+  .pill-alerta { background: var(--amarillo-bg); color: var(--amarillo); }
+  .pill-critico { background: var(--rojo-bg); color: var(--rojo); }
+
+  .card-nota {
+    padding: 12px 20px;
+    border-top: 1px solid var(--gris-borde);
+    font-size: 12px;
+    color: var(--texto-ter);
+  }
+
+  .card-nota strong { color: var(--naranja); }
+
+  /* CONTROL CRITICO banner */
+  .control-critico {
+    margin-top: 14px;
+    background: rgba(249, 115, 22, 0.07);
+    border: 1px solid rgba(249,115,22,0.2);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: rgba(249,115,22,0.8);
+    line-height: 1.5;
+  }
+
+  /* NOT FOUND */
+  .not-found {
+    background: var(--gris-oscuro);
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+    padding: 28px 20px;
+    text-align: center;
+  }
+
+  .not-found .nf-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+    opacity: 0.4;
+  }
+
+  .not-found p {
+    font-size: 15px;
+    color: var(--texto-sec);
+    margin-bottom: 14px;
+  }
+
+  .not-found p strong { color: var(--texto); }
+
+  .suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 4px;
+  }
+
+  .sug-btn {
+    background: var(--gris-medio);
+    border: 1px solid var(--gris-borde);
+    border-radius: 20px;
+    color: var(--texto-sec);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .sug-btn:hover {
+    background: var(--gris-borde);
+    color: var(--texto);
+    border-color: var(--naranja);
+  }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--gris-borde);
+    text-align: center;
+    font-size: 11px;
+    color: var(--texto-ter);
+    letter-spacing: 0.5px;
+    line-height: 1.8;
+  }
+
+  /* MOBILE */
+  @media (max-width: 400px) {
+    .header h1 { font-size: 30px; }
+    .card-body { grid-template-columns: 1fr; }
+    .plate { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="logo-row">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 17h2v1a2 2 0 004 0v-1h8v1a2 2 0 004 0v-1h2v-4l-3-5H5L2 13H1v4zm4 0v1a1 1 0 002 0v-1H5zm12 0v1a1 1 0 002 0v-1h-2zM5.5 9h13l2.25 3.5H3.25L5.5 9z"/>
+        </svg>
+      </div>
+      <span class="logo-text">Lomas Bayas · Mitta</span>
+    </div>
+    <h1>Mantención<br><span>Camionetas</span></h1>
+    <p>Programa de mantenimiento preventivo<br>y torque de ruedas — <strong style="color:var(--texto-sec)">Abril 2026</strong></p>
+  </div>
+
+  <div class="search-wrap">
+    <span class="search-label">Ingresa la patente</span>
+    <div class="search-box">
+      <input type="text" id="patInput" placeholder="Ej: TRRL-36" maxlength="10"
+        oninput="this.value=this.value.toUpperCase(); if(this.value.length>=7) buscar()"
+        onkeydown="if(event.key==='Enter') buscar()" autocomplete="off" autocorrect="off" spellcheck="false" />
+      <button id="btnBuscar" onclick="buscar()">Buscar</button>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="dot dot-ok"></div> Al día</div>
+    <div class="legend-item"><div class="dot dot-hoy"></div> Próximo / hoy</div>
+    <div class="legend-item"><div class="dot dot-vencido"></div> Vencido</div>
+  </div>
+
+  <div id="result"></div>
+
+  <div class="footer">
+    Control crítico de seguridad vial<br>
+    No conducir si la mantención está vencida — reportar al área responsable<br><br>
+    Programa abril 2026 · Generado para uso interno
+  </div>
+
+</div>
+
+<script>
+const HOY = new Date(2026, 3, 3);
+
+const DATA = [
+  {p:"TPBH-99",m:"01-04-2026",t:"16-04-2026"},
+  {p:"TPBH-97",m:"01-04-2026",t:"16-04-2026"},
+  {p:"TPBH-95",m:"01-04-2026",t:"16-04-2026"},
+  {p:"TPBH-96",m:"01-04-2026",t:"16-04-2026"},
+  {p:"TRRL-36",m:"02-04-2026",t:"17-04-2026"},
+  {p:"TRRL-34",m:"02-04-2026",t:"17-04-2026",n:"Reagendado al 19-04"},
+  {p:"TRRK-95",m:"02-04-2026",t:"17-04-2026",n:"Reagendado al 16-04"},
+  {p:"TRRL-29",m:"02-04-2026",t:"17-04-2026"},
+  {p:"SBRF-38",m:"03-04-2026",t:"18-04-2026",n:"Reagendado al 18-04"},
+  {p:"TRRL-24",m:"03-04-2026",t:"18-04-2026"},
+  {p:"TRRL-12",m:"03-04-2026",t:"18-04-2026"},
+  {p:"TRRL-26",m:"03-04-2026",t:"18-04-2026"},
+  {p:"TPBH-98",m:"04-04-2026",t:"19-04-2026"},
+  {p:"PBFX-93",m:"04-04-2026",t:"19-04-2026"},
+  {p:"TRRL-16",m:"04-04-2026",t:"19-04-2026"},
+  {p:"TRRL-28",m:"04-04-2026",t:"19-04-2026"},
+  {p:"TRRL-32",m:"05-04-2026",t:"20-04-2026",n:"Reagendado al 19-04"},
+  {p:"TRRL-20",m:"05-04-2026",t:"20-04-2026"},
+  {p:"TRRL-11",m:"05-04-2026",t:"20-04-2026"},
+  {p:"TRRL-19",m:"05-04-2026",t:"20-04-2026"},
+  {p:"TRRK-96",m:"06-04-2026",t:"21-04-2026"},
+  {p:"TRRL-30",m:"06-04-2026",t:"21-04-2026"},
+  {p:"TRRK-99",m:"06-04-2026",t:"21-04-2026"},
+  {p:"TRRL-41",m:"06-04-2026",t:"21-04-2026"},
+  {p:"TRRL-42",m:"07-04-2026",t:"22-04-2026"},
+  {p:"TRRL-31",m:"07-04-2026",t:"22-04-2026"},
+  {p:"TRRL-38",m:"07-04-2026",t:"22-04-2026"},
+  {p:"TRRL-39",m:"07-04-2026",t:"22-04-2026"},
+  {p:"PDZY-64",m:"08-04-2026",t:"23-04-2026"},
+  {p:"TRRL-15",m:"08-04-2026",t:"23-04-2026"},
+  {p:"SBRF-55",m:"08-04-2026",t:"23-04-2026"},
+  {p:"SBRF-39",m:"08-04-2026",t:"23-04-2026"},
+  {p:"PDZY-75",m:"09-04-2026",t:"24-04-2026"},
+  {p:"PDZY-80",m:"09-04-2026",t:"24-04-2026"},
+  {p:"TRRL-21",m:"09-04-2026",t:"24-04-2026"},
+  {p:"PDZZ-22",m:"09-04-2026",t:"24-04-2026"},
+  {p:"TRRL-23",m:"10-04-2026",t:"25-04-2026"},
+  {p:"TRRL-43",m:"10-04-2026",t:"25-04-2026"},
+  {p:"TRRL-10",m:"10-04-2026",t:"25-04-2026"},
+  {p:"TRRL-27",m:"10-04-2026",t:"25-04-2026"},
+  {p:"TRRL-13",m:"11-04-2026",t:"26-04-2026"},
+  {p:"TRRL-17",m:"11-04-2026",t:"26-04-2026"},
+  {p:"SBRF-46",m:"11-04-2026",t:"26-04-2026"},
+  {p:"TRRL-25",m:"11-04-2026",t:"26-04-2026",n:"Reagendado al 23-04"},
+  {p:"TRRK-98",m:"12-04-2026",t:"27-04-2026"},
+  {p:"TRRL-33",m:"12-04-2026",t:"27-04-2026"},
+  {p:"TRRL-35",m:"12-04-2026",t:"27-04-2026"},
+  {p:"TRRL-40",m:"12-04-2026",t:"27-04-2026",n:"Reagendado al 27-04"},
+  {p:"TRRL-14",m:"13-04-2026",t:"28-04-2026"},
+  {p:"TRRL-22",m:"13-04-2026",t:"28-04-2026"},
+  {p:"SBRF-37",m:"13-04-2026",t:"28-04-2026"},
+  {p:"SBRF-27",m:"13-04-2026",t:"28-04-2026"},
+  {p:"PCYD-31",m:"14-04-2026",t:"29-04-2026"},
+  {p:"SBRF-35",m:"14-04-2026",t:"29-04-2026"},
+  {p:"RHJL-57",m:"14-04-2026",t:"29-04-2026"},
+  {p:"PCYD-16",m:"14-04-2026",t:"29-04-2026"},
+  {p:"SBRF-26",m:"15-04-2026",t:"30-04-2026"},
+  {p:"SBRF-28",m:"15-04-2026",t:"30-04-2026"},
+  {p:"VCYG-14",m:"15-04-2026",t:"30-04-2026"},
+  {p:"VDRY-40",m:"15-04-2026",t:"30-04-2026"},
+  {p:"TRRL-29",m:"16-04-2026",t:"01-04-2026",n:"Reagendado"},
+  {p:"SLBJ-11",m:"16-04-2026",t:"01-04-2026"},
+  {p:"RHJL-64",m:"16-04-2026",t:"01-04-2026"},
+  {p:"TRRL-37",m:"17-04-2026",t:"02-04-2026"},
+  {p:"SKZW-14",m:"17-04-2026",t:"02-04-2026"},
+  {p:"RJVR-81",m:"17-04-2026",t:"02-04-2026"},
+  {p:"SLBJ-14",m:"17-04-2026",t:"02-04-2026"},
+  {p:"PDZY-93",m:"18-04-2026",t:"03-04-2026"},
+  {p:"PDZZ-14",m:"18-04-2026",t:"03-04-2026"},
+  {p:"TRRL-18",m:"18-04-2026",t:"03-04-2026"},
+  {p:"PYVG-79",m:"19-04-2026",t:"04-04-2026"},
+  {p:"RBXH-44",m:"19-04-2026",t:"04-04-2026"},
+  {p:"PGPZ-82",m:"20-04-2026",t:"05-04-2026"},
+  {p:"SBRF-29",m:"20-04-2026",t:"05-04-2026"},
+  {p:"PDZZ-58",m:"20-04-2026",t:"05-04-2026"},
+  {p:"SHPP-50",m:"20-04-2026",t:"05-04-2026"},
+  {p:"TPBH-94",m:"21-04-2026",t:"06-04-2026"},
+  {p:"PTRK-74",m:"21-04-2026",t:"06-04-2026"},
+  {p:"SBRF-30",m:"21-04-2026",t:"06-04-2026"},
+  {p:"SCJS-69",m:"21-04-2026",t:"06-04-2026"},
+  {p:"PDZZ-30",m:"22-04-2026",t:"07-04-2026"},
+  {p:"PDZZ-50",m:"22-04-2026",t:"07-04-2026"},
+  {p:"PCZJ-42",m:"22-04-2026",t:"07-04-2026"},
+  {p:"SBRF-33",m:"22-04-2026",t:"07-04-2026",n:"Equipo especial (®)"},
+  {p:"PTJC-88",m:"23-04-2026",t:"08-04-2026"},
+  {p:"VCYG-18",m:"23-04-2026",t:"08-04-2026"},
+  {p:"VCYG-17",m:"23-04-2026",t:"08-04-2026"},
+  {p:"LVBL-99",m:"24-04-2026",t:"09-04-2026"},
+  {p:"VDRY-41",m:"24-04-2026",t:"09-04-2026",n:"Equipo especial (®)"},
+  {p:"TRRK-94",m:"24-04-2026",t:"09-04-2026"},
+  {p:"VDRY-42",m:"24-04-2026",t:"09-04-2026",n:"Equipo especial (®)"},
+  {p:"SBRF-65",m:"25-04-2026",t:"10-04-2026",n:"Equipo especial (®)"},
+  {p:"PDZZ-39",m:"25-04-2026",t:"10-04-2026"},
+  {p:"VCYG-15",m:"25-04-2026",t:"10-04-2026"},
+  {p:"RJVR-74",m:"25-04-2026",t:"10-04-2026"},
+  {p:"PDZZ-65",m:"26-04-2026",t:"11-04-2026"},
+  {p:"PDZZ-56",m:"26-04-2026",t:"11-04-2026"},
+  {p:"PDZZ-62",m:"26-04-2026",t:"11-04-2026"},
+  {p:"RBXH-52",m:"26-04-2026",t:"11-04-2026"},
+  {p:"SHPP-49",m:"27-04-2026",t:"12-04-2026"},
+  {p:"PDZZ-31",m:"27-04-2026",t:"12-04-2026"},
+  {p:"PDZZ-49",m:"27-04-2026",t:"12-04-2026"},
+  {p:"PDZZ-25",m:"28-04-2026",t:"13-04-2026"},
+  {p:"VCYF-81",m:"28-04-2026",t:"13-04-2026"},
+  {p:"LBCC-52",m:"28-04-2026",t:"13-04-2026"},
+  {p:"SHPP-43",m:"28-04-2026",t:"13-04-2026"},
+  {p:"LXGG-75",m:"29-04-2026",t:"14-04-2026",n:"Equipo especial (®)"},
+  {p:"RVSS-51",m:"29-04-2026",t:"14-04-2026",n:"Equipo especial (®)"},
+  {p:"SVJJ-41",m:"29-04-2026",t:"14-04-2026",n:"Equipo especial (®)"},
+  {p:"SBRF-44",m:"29-04-2026",t:"14-04-2026",n:"Equipo especial (®)"},
+  {p:"SBRF-34",m:"30-04-2026",t:"15-04-2026",n:"Equipo especial (®)"},
+  {p:"SBRF-42",m:"30-04-2026",t:"15-04-2026",n:"Equipo especial (®)"},
+  {p:"VBVW-22",m:"30-04-2026",t:"15-04-2026",n:"Servicio especial (S)"},
+  {p:"VBVW-24",m:"30-04-2026",t:"15-04-2026",n:"Servicio especial (S)"},
+];
+
+function parseDate(s) {
+  const [d,m,y] = s.split('-');
+  return new Date(+y, +m-1, +d);
+}
+
+function diasDif(s) {
+  return Math.round((parseDate(s) - HOY) / 86400000);
+}
+
+function statusInfo(d) {
+  if (d < 0) return {cls:'critico', txt: 'Hace '+Math.abs(d)+' día'+(Math.abs(d)!==1?'s':'')};
+  if (d === 0) return {cls:'alerta', txt: 'Hoy'};
+  if (d <= 3) return {cls:'alerta', txt: 'En '+d+' día'+(d!==1?'s':'')};
+  return {cls:'ok', txt: 'En '+d+' días'};
+}
+
+const DIAS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+function fmtDia(s) {
+  const f = parseDate(s);
+  return DIAS[f.getDay()];
+}
+
+function fmtFecha(s) {
+  const f = parseDate(s);
+  return f.getDate() + ' ' + MESES[f.getMonth()];
+}
+
+function buscar() {
+  const pat = document.getElementById('patInput').value.trim().toUpperCase();
+  const div = document.getElementById('result');
+  if (!pat || pat.length < 3) { div.innerHTML = ''; return; }
+
+  const matches = DATA.filter(v => v.p === pat);
+
+  if (!matches.length) {
+    const prefix = pat.substring(0, Math.min(4, pat.length));
+    const sugs = DATA.filter(v => v.p.startsWith(prefix) && v.p !== pat)
+      .filter((v,i,a) => a.findIndex(x=>x.p===v.p)===i).slice(0, 5);
+
+    div.innerHTML = `
+      <div class="not-found">
+        <div class="nf-icon">—</div>
+        <p>Patente <strong>${pat}</strong> no está en el programa de abril 2026.</p>
+        ${sugs.length ? `
+          <p style="font-size:12px;color:var(--texto-ter);margin-bottom:8px;">Patentes similares:</p>
+          <div class="suggestions">
+            ${sugs.map(s=>`<button class="sug-btn" onclick="document.getElementById('patInput').value='${s.p}';buscar()">${s.p}</button>`).join('')}
+          </div>` : ''}
+      </div>`;
+    return;
+  }
+
+  const v = matches[matches.length - 1];
+  const dm = diasDif(v.m);
+  const dt = diasDif(v.t);
+  const sm = statusInfo(dm);
+  const st = statusInfo(dt);
+  const worst = (sm.cls === 'critico' || st.cls === 'critico') ? 'critico'
+              : (sm.cls === 'alerta' || st.cls === 'alerta') ? 'alerta' : 'ok';
+  const gsLabel = worst === 'critico' ? 'Revisar urgente' : worst === 'alerta' ? 'Próximo' : 'Al día';
+
+  div.innerHTML = `
+    <div class="result-card">
+      <div class="card-top">
+        <div class="plate">${v.p}</div>
+        <div class="global-status gs-${worst}">${gsLabel}</div>
+      </div>
+      <div class="card-body">
+        <div class="info-block">
+          <div class="lbl">Mantención preventiva</div>
+          <div class="fecha-dia">${fmtDia(v.m)}</div>
+          <div class="fecha-num">${fmtFecha(v.m)}</div>
+          <span class="pill pill-${sm.cls}">${sm.txt}</span>
+        </div>
+        <div class="info-block">
+          <div class="lbl">Torque de ruedas</div>
+          <div class="fecha-dia">${fmtDia(v.t)}</div>
+          <div class="fecha-num">${fmtFecha(v.t)}</div>
+          <span class="pill pill-${st.cls}">${st.txt}</span>
+        </div>
+      </div>
+      ${v.n ? `<div class="card-nota"><strong>Nota:</strong> ${v.n}</div>` : ''}
+    </div>
+    ${worst === 'critico' ? `
+    <div class="control-critico">
+      Control crítico de seguridad vial: si la mantención está vencida, no conducir el vehículo y reportar al área correspondiente mediante un Reporte de Seguridad.
+    </div>` : ''}
+  `;
+}
+</script>
+</body>
+</html>
